@@ -24,7 +24,7 @@ This report evaluates the developer experience (DX) of integrating **Selaenium v
 
 ## 2. Test Suite Statistics & Categories
 
-The project's test suite spans frontend React component tests, fast isolated Selaenium UI component tests, Spring Boot context load tests, and full-stack Selaenium end-to-end integration tests.
+The project's test suite spans frontend React component unit tests, fast isolated Selaenium tests against the **real bundled React UI build**, Spring Boot context load tests, and full-stack Selaenium end-to-end integration tests.
 
 ### Test Breakdown by Category
 
@@ -32,19 +32,21 @@ The project's test suite spans frontend React component tests, fast isolated Sel
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | **Frontend Unit/Component** | `App.test.js` (React Testing Library) | Verifies React UI components & DOM rendering in JSDOM | 1 | PASS | ~6.4s |
 | **Backend Context Load** | `ApplicationTests.java` (Spring Boot) | Spring ApplicationContext bootstrapping with H2 in-memory DB | 1 | PASS | ~6.1s |
-| **Selaenium UI Component** | `SelaeniumComponentTest.java` | Fast Selaenium tests with mock HTML components in headless Chrome | 3 | PASS | ~2.3s |
-| **Selaenium Full-Stack Integration** | `SelaeniumFullStackTest.java` | E2E browser automation against live Spring Boot embedded server | 3 | PASS | ~8.1s |
-| **Total** | **4 Test Classes / Suites** | **Comprehensive Full-Stack & Component Test Suite** | **8** | **PASS** | **~22.9s** |
+| **Selaenium UI Component** | `SelaeniumComponentTest.java` | Fast Selaenium tests driving Chrome against real compiled React bundle (`frontend/build`) | 3 | PASS | ~2.0s |
+| **Selaenium Full-Stack Integration** | `SelaeniumFullStackTest.java` | E2E browser automation against live Spring Boot embedded server | 3 | PASS | ~3.6s |
+| **Total** | **4 Test Classes / Suites** | **Comprehensive Full-Stack & Component Test Suite** | **8** | **PASS** | **~18.1s** |
 
 ### Individual Selaenium Test Case Details
 
-#### Category: Selaenium Component Tests (`SelaeniumComponentTest.java`)
-1. `testNavigationBarComponent`: Validates navigation links and dynamic cart count badge rendering.
-2. `testProductCardComponent`: Validates product item titles, discount badges, and mock "Add to Cart" button interactions.
-3. `testRegistrationFormComponent`: Validates form input submission and DOM response state updates.
+#### Category: Real React UI Component Tests (`SelaeniumComponentTest.java`)
+*Note: Evaluates real production-compiled React bundle assets (`frontend/build/`) served over an in-memory HTTP server without Spring Boot overhead.*
+1. `testRealReactAppHeadingComponent`: Verifies the real React root mounting and main brand heading rendering ("Have the flamboyance in you have no bounds").
+2. `testRealReactAppHomeSubcomponents`: Verifies real React home page subcomponents, subtitle Typography, and call-to-action link elements ("Explore more trends", "Register now").
+3. `testRealReactAppBarComponent`: Verifies real navigation header components, Material-UI Grid layouts, and top action links ("Products", "Register", "Login").
 
 #### Category: Selaenium Full-Stack E2E Tests (`SelaeniumFullStackTest.java`)
-1. `testHomePageLoads`: Navigates to live embedded server root and asserts React single-page app root element mounting.
+*Note: Drives real browser interactions against live Spring Boot embedded Tomcat web server.*
+1. `testHomePageLoads`: Navigates to live embedded server root (`/index.html`) and asserts full-stack single-page app mounting.
 2. `testReactAppSpaRoute`: Tests direct browser navigation to SPA routes (`/index.html`).
 3. `testApiAuthEndpoint`: Tests full-stack browser-to-backend REST API endpoint accessibility (`/api/auth`).
 
@@ -59,7 +61,7 @@ The project's test suite spans frontend React component tests, fast isolated Sel
    - Cache `libs/selenium-client-multiplatform.jar` and local driver binaries in CI workflows (`.github/workflows`) to reduce test run initialization times.
 
 3. **In-Memory Component Test Web Server**:
-   - For even faster component-level Selaenium tests without writing temporary `.html` files, integrate a lightweight embedded HTTP server (e.g. `com.sun.net.httpserver.HttpServer` or Javalin) directly within test setups to serve component mocks over localhost HTTP URLs.
+   - Serving real compiled frontend artifacts (`frontend/build/`) via a lightweight in-memory HTTP server (`com.sun.net.httpserver.HttpServer`) allows extremely fast (~2 second) Selaenium UI component testing without needing full Spring Boot application server bootstrapping.
 
 ---
 
