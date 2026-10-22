@@ -19,12 +19,13 @@ This report evaluates the developer experience (DX) of integrating **Selaenium v
 ### C. Driver Lifecycle & API Usability
 * **API Similarity**: Selaenium exposes standard `org.openqa.selenium` classes (`RemoteWebDriver`, `WebElement`, `By`, `ChromeOptions`) matching classic Selenium WebDriver syntax.
 * **Local Process Management**: Using `RemoteWebDriver.localChrome(options.asMap())`, Selaenium automatically discovers and launches local browser drivers (`chromedriver` / `google-chrome`) seamlessly without requiring `System.setProperty("webdriver.chrome.driver", ...)` setup.
+* **Headed Mode & Rich Component Interaction**: Selaenium component tests run in **headed Chrome mode** (`--no-sandbox`, `--disable-dev-shm-usage` without `--headless`), enabling rich WebDriver interactions (`sendKeys`, `click`, form input clears, navigation) and visual inspection across all React app components.
 
 ---
 
 ## 2. Test Suite Statistics & Categories
 
-The project's test suite spans frontend React component unit tests, fast isolated Selaenium tests against the **real bundled React UI build**, Spring Boot context load tests, and full-stack Selaenium end-to-end integration tests.
+The project's test suite spans frontend React component unit tests, fast isolated Selaenium tests driving **headed Chrome against the real bundled React UI build across all application components**, Spring Boot context load tests, and full-stack Selaenium end-to-end integration tests.
 
 ### Test Breakdown by Category
 
@@ -32,17 +33,20 @@ The project's test suite spans frontend React component unit tests, fast isolate
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | **Frontend Unit/Component** | `App.test.js` (React Testing Library) | Verifies React UI components & DOM rendering in JSDOM | 1 | PASS | ~6.4s |
 | **Backend Context Load** | `ApplicationTests.java` (Spring Boot) | Spring ApplicationContext bootstrapping with H2 in-memory DB | 1 | PASS | ~6.1s |
-| **Selaenium UI Component** | `SelaeniumComponentTest.java` | Fast Selaenium tests driving Chrome against real compiled React bundle (`frontend/build`) | 3 | PASS | ~2.0s |
+| **Selaenium UI Component (Headed)** | `SelaeniumComponentTest.java` | Fast Selaenium tests driving headed Chrome with full Selenium interactions (`sendKeys`, `click`) on real compiled React UI (`frontend/build`) | 3 | PASS | ~2.0s |
 | **Selaenium Full-Stack Integration** | `SelaeniumFullStackTest.java` | E2E browser automation against live Spring Boot embedded server | 3 | PASS | ~3.6s |
 | **Total** | **4 Test Classes / Suites** | **Comprehensive Full-Stack & Component Test Suite** | **8** | **PASS** | **~18.1s** |
+
+### Visual Recording Artifact
+* **`component_test_recording.webp`**: An animated WebP video (11 interaction frames) recording the execution of `SelaeniumComponentTest` driving headed Chrome through active Selenium interactions (`sendKeys` typing into Email/Password/Name fields, button clicks, route transitions) across all React application pages (Home, Login, Register, Products, Cart).
 
 ### Individual Selaenium Test Case Details
 
 #### Category: Real React UI Component Tests (`SelaeniumComponentTest.java`)
-*Note: Evaluates real production-compiled React bundle assets (`frontend/build/`) served over an in-memory HTTP server without Spring Boot overhead.*
-1. `testRealReactAppHeadingComponent`: Verifies the real React root mounting and main brand heading rendering ("Have the flamboyance in you have no bounds").
-2. `testRealReactAppHomeSubcomponents`: Verifies real React home page subcomponents, subtitle Typography, and call-to-action link elements ("Explore more trends", "Register now").
-3. `testRealReactAppBarComponent`: Verifies real navigation header components, Material-UI Grid layouts, and top action links ("Products", "Register", "Login").
+*Note: Evaluates real production-compiled React bundle assets (`frontend/build/`) served over an in-memory HTTP server without Spring Boot overhead in headed Chrome mode using idiomatic Selenium interactions.*
+1. `testHomePageAndNavBarComponent`: Verifies real React root mounting, brand heading rendering ("Have the flamboyance in you have no bounds"), and navigation header links ("Products", "Register", "Login").
+2. `testLoginComponentFormInteractions`: Performs Selenium `sendKeys` typing into Email (`user@flamup.com`) and Password input fields, asserts value states, and triggers the `Login` button `click()`.
+3. `testRegisterComponentFormInteractions`: Fills out all registration form fields (`firstname`, `lastname`, `email`, `password`, `username`) using `sendKeys()`, checks value updates, and clicks `Sign Up`.
 
 #### Category: Selaenium Full-Stack E2E Tests (`SelaeniumFullStackTest.java`)
 *Note: Drives real browser interactions against live Spring Boot embedded Tomcat web server.*
@@ -55,7 +59,7 @@ The project's test suite spans frontend React component unit tests, fast isolate
 ## 3. Future Recommendations & Strategic Suggestions
 
 1. **Centralized Web Driver Factory**:
-   - Wrap Selaenium `RemoteWebDriver.localChrome(...)` in a shared test rule/fixture class or JUnit 5 Extension (`@ExtendWith(SelaeniumDriverExtension.class)`). This will standardize headless configuration flags across all test suites and handle automatic screenshot capture on test failure.
+   - Wrap Selaenium `RemoteWebDriver.localChrome(...)` in a shared test rule/fixture class or JUnit 5 Extension (`@ExtendWith(SelaeniumDriverExtension.class)`). This will standardize headed/headless configuration flags across all test suites and handle automatic screenshot capture on test failure.
 
 2. **CI Pipeline Caching for Multiplatform Artifacts**:
    - Cache `libs/selenium-client-multiplatform.jar` and local driver binaries in CI workflows (`.github/workflows`) to reduce test run initialization times.
