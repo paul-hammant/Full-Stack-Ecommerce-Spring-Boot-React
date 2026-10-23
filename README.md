@@ -24,3 +24,21 @@ Now continue to https://localhost:8443, the application should be up and running
 
 * In case you are using chrome, go to chrome://flags/#allow-insecure-localhost and Enable the option that says "Allow invalid certificates for resources loaded from localhost".
 
+## Servirtium VCR & Selaenium Integration
+
+This repository integrates [Servirtium VCR](https://github.com/servirtium/servirtium-vcr) ([v2.0.0-alpha.3 release](https://github.com/servirtium/servirtium-vcr/releases/tag/v2.0.0-alpha.3)) alongside Selaenium browser automation.
+
+### Architecture & Rationale
+
+Per Paul Hammant's [Technology Compatibility Kits (TCK) and Service Virtualization rationale](https://paulhammant.com/2018/07/13/another-graphic-for-technology-compatibility-kits/), Servirtium VCR captures real HTTP wire interactions into human-readable, git-diffable Markdown tapes (`tapes/react-app-interactions.md`).
+
+1. **Record Mode (`SelaeniumServirtiumRecordTest.java`)**:
+   - Boots the live Spring Boot backend server.
+   - Starts Servirtium VCR in record mode (`Vcr.record(...)`), mounting the compiled React UI (`frontend/build`).
+   - Drives Selaenium (`RemoteWebDriver`) to interact with the React UI and trigger real backend endpoints (`/api/auth`, `/api/login`, `/api/register`, `/api/v1/clothes`).
+   - Writes all HTTP request/response pairs into canonical Servirtium Markdown tape files.
+
+2. **Playback Mode (`SelaeniumServirtiumPlaybackTest.java`)**:
+   - Runs **without** booting Spring Boot or a database server.
+   - Starts Servirtium VCR in playback mode (`Vcr.playback(...)`) serving the real compiled React UI and replaying API responses from the committed Markdown tapes.
+   - Selaenium clicks through the real React UI over the Servirtium mock HTTP server, verifying complete UI compatibility deterministically and rapidly in CI.

@@ -35,7 +35,9 @@ The project's test suite spans frontend React component unit tests, fast isolate
 | **Backend Context Load** | `ApplicationTests.java` (Spring Boot) | Spring ApplicationContext bootstrapping with H2 in-memory DB | 1 | PASS | ~6.1s |
 | **Selaenium UI Component (Headed)** | `SelaeniumComponentTest.java` | Fast Selaenium tests driving headed Chrome with full Selenium interactions (`sendKeys`, `click`) on real compiled React UI (`frontend/build`) | 3 | PASS | ~2.0s |
 | **Selaenium Full-Stack Integration** | `SelaeniumFullStackTest.java` | E2E browser automation against live Spring Boot embedded server | 3 | PASS | ~3.6s |
-| **Total** | **4 Test Classes / Suites** | **Comprehensive Full-Stack & Component Test Suite** | **8** | **PASS** | **~18.1s** |
+| **Servirtium VCR Record Mode** | `SelaeniumServirtiumRecordTest.java` | Drives Selaenium interactions through Servirtium proxy against live Spring Boot server, capturing Markdown tapes (`tapes/react-app-interactions.md`) | 1 | PASS | ~8.3s |
+| **Servirtium VCR Playback Mode** | `SelaeniumServirtiumPlaybackTest.java` | Drives Selaenium clicking real React UI over Servirtium VCR mock HTTP server in playback mode without backend or DB | 1 | PASS | ~2.1s |
+| **Total** | **6 Test Classes / Suites** | **Comprehensive Full-Stack, Component & VCR Test Suite** | **10** | **PASS** | **~28.5s** |
 
 ### Visual Recording Artifact
 * **`component_test_recording.webp`**: An animated WebP video (11 interaction frames) recording the execution of `SelaeniumComponentTest` driving headed Chrome through active Selenium interactions (`sendKeys` typing into Email/Password/Name fields, button clicks, route transitions) across all React application pages (Home, Login, Register, Products, Cart).
@@ -53,6 +55,11 @@ The project's test suite spans frontend React component unit tests, fast isolate
 1. `testHomePageLoads`: Navigates to live embedded server root (`/index.html`) and asserts full-stack single-page app mounting.
 2. `testReactAppSpaRoute`: Tests direct browser navigation to SPA routes (`/index.html`).
 3. `testApiAuthEndpoint`: Tests full-stack browser-to-backend REST API endpoint accessibility (`/api/auth`).
+
+#### Category: Servirtium VCR Record & Playback Tests
+*Note: Demonstrates Service Virtualization and Technology Compatibility Kit (TCK) concepts using Servirtium VCR 2.0.0-alpha.3 and Selaenium browser automation.*
+1. `SelaeniumServirtiumRecordTest.java`: Captures live browser-to-backend REST interactions (`/api/auth`, `/api/login`, `/api/register`, `/api/v1/clothes`) into human-readable Markdown tapes (`tapes/react-app-interactions.md`).
+2. `SelaeniumServirtiumPlaybackTest.java`: Drives Selaenium browser automation over Servirtium VCR mock HTTP server replaying recorded Markdown tapes without requiring a live backend or database connection.
 
 ---
 
