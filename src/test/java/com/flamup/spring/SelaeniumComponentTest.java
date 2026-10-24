@@ -58,8 +58,7 @@ public class SelaeniumComponentTest {
         serverBaseUrl = "http://127.0.0.1:" + port;
 
         ChromeOptions options = new ChromeOptions();
-        // Headed mode enabled per user request (no --headless flag)
-        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+        options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
         driver = RemoteWebDriver.localChrome(options.asMap());
     }
 
