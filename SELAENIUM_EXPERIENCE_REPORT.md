@@ -57,7 +57,7 @@ The project's test suite spans frontend React component unit tests, fast isolate
 3. `testApiAuthEndpoint`: Tests full-stack browser-to-backend REST API endpoint accessibility (`/api/auth`).
 
 #### Category: Servirtium VCR Record & Playback Tests
-*Note: Demonstrates Service Virtualization and Technology Compatibility Kit (TCK) concepts using Servirtium VCR 2.0.0-alpha.3 and Selaenium browser automation.*
+*Note: Demonstrates Service Virtualization and Technology Compatibility Kit (TCK) concepts using Servirtium VCR 2.0.0-alpha.3 and Selaenium browser automation. See [SERVIRTIUM_EXPERIENCE_REPORT.md](SERVIRTIUM_EXPERIENCE_REPORT.md) for full Servirtium DX assessment and maintainer feedback.*
 1. `SelaeniumServirtiumRecordTest.java`: Captures live browser-to-backend REST interactions (`/api/auth`, `/api/login`, `/api/register`, `/api/v1/clothes`) into human-readable Markdown tapes (`tapes/react-app-interactions.md`).
 2. `SelaeniumServirtiumPlaybackTest.java`: Drives Selaenium browser automation over Servirtium VCR mock HTTP server replaying recorded Markdown tapes without requiring a live backend or database connection.
 

@@ -42,3 +42,5 @@ Per Paul Hammant's [Technology Compatibility Kits (TCK) and Service Virtualizati
    - Runs **without** booting Spring Boot or a database server.
    - Starts Servirtium VCR in playback mode (`Vcr.playback(...)`) serving the real compiled React UI and replaying API responses from the committed Markdown tapes.
    - Selaenium clicks through the real React UI over the Servirtium mock HTTP server, verifying complete UI compatibility deterministically and rapidly in CI.
+
+For detailed developer experience findings and suggestions for the Servirtium team, see the [Servirtium Experience Report](SERVIRTIUM_EXPERIENCE_REPORT.md).
